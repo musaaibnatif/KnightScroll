@@ -40,7 +40,8 @@ class Entity():
 		self.respawn_timer = 0
 		self.close_enough = False
 		self.seen = False
-		if random.randint(1, 25) == 10 and self.char_type == "Skeleton":
+		#1 in 25 chance for skeleton to be boss mob
+		if self.char_type == "Skeleton":
 			self.lucky_skel = True
 
 		#load all images 
@@ -71,7 +72,7 @@ class Entity():
 		elif self.char_type == "Skeleton" and self.lucky_skel:
 			self.attacking_rect = pygame.Rect(0, 0, self.rect.width, self.rect.height)
 			self.pseudo_rect = pygame.Rect(0, 0, self.rect.width, self.rect.height)
-			self.health = 200
+			self.health = 80
 		self.collected = False
 		self.score = 0
 
@@ -263,12 +264,11 @@ class Entity():
 		if self.char_type == 'Skeleton':
 			self.attacking_rect.center = (self.rect.centerx + 50 * self.direction, self.rect.centery)
 		if self.attacking_rect.colliderect(target.rect) and self.char_type == 'Player':
-			#self.sleep(900) #wait for animation to finish
 			target.health -= random.randint(8, 20)
 			target.hit = True
 			if target.hit:
 				target.check_alive()
-				if self.lucky_skel and not target.alive and not target.collected:
+				if target.lucky_skel and not target.alive and not target.collected:
 					self.score += random.randint(25,50)
 					target.collected = True
 					print(self.score)
@@ -277,7 +277,6 @@ class Entity():
 					target.collected = True
 					print(self.score)
 		if self.attacking_rect.colliderect(target.rect) and self.char_type == 'Skeleton':
-			#self.sleep(1400) #wait for animation to finish
 			target.health -= random.randint(8, 18)
 			target.hit = True
 		elif self.lucky_skel and self.attacking_rect.colliderect(target.rect) and self.char_type == 'Skeleton':
@@ -304,12 +303,13 @@ class Entity():
 			ratio = self.health/40
 			health_bar_len = 66
 		if self.char_type == 'Skeleton' and self.lucky_skel:
-			ratio = self.health/200
+			ratio = self.health/80
 			health_bar_len = 66 
 		if self.alive and not self.lucky_skel:
 			pygame.draw.rect(surface, BLACK, (self.rect.x-1, self.rect.y-6, health_bar_len+2, 7)) #health bar outline
 			pygame.draw.rect(surface, RED, (self.rect.x, self.rect.y-5, health_bar_len, 5)) #health previously
 			pygame.draw.rect(surface, GREEN, (self.rect.x, self.rect.y-5, health_bar_len*ratio, 5)) #health remaining
+		#gold health bar for boss skeleton
 		elif self.alive and self.lucky_skel:
 			pygame.draw.rect(surface, BLACK, (self.rect.x-1, self.rect.y-6, health_bar_len+2, 7)) #health bar outline
 			pygame.draw.rect(surface, RED, (self.rect.x, self.rect.y-5, health_bar_len, 5)) #health previously
@@ -325,8 +325,8 @@ class Entity():
 
 	def draw(self, surface):
 		img = pygame.transform.flip(self.image, self.flip, False)
-		pygame.draw.rect(surface, (255, 0 , 0), self.rect)
-		pygame.draw.rect(surface, GREEN, self.vision)
+		#pygame.draw.rect(surface, (255, 0 , 0), self.rect)
+		#pygame.draw.rect(surface, GREEN, self.vision)
 		if self.alive:
 			surface.blit(img, self.rect)
 		elif self.respawn_timer < 250:
