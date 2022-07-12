@@ -41,7 +41,7 @@ class Entity():
 		self.close_enough = False
 		self.seen = False
 		#1 in 25 chance for skeleton to be boss mob
-		if self.char_type == "Skeleton":
+		if random.randint(1, 25) == 10 and self.char_type == "Skeleton":
 			self.lucky_skel = True
 
 		#load all images 
